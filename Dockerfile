@@ -21,4 +21,4 @@ ENV BOT_TOKEN="7400491029:AAF5r3cfKWpP8aXjI683z3izeca1YLhGVXc"
 EXPOSE 8080
 
 # Command to run the bot when the container starts
-CMD ["python", "telegram_bot.py"]
+CMD ["python", "bot.py"]
