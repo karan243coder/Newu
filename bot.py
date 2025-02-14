@@ -2,7 +2,7 @@ import logging
 import os
 import youtube_dl
 from telegram import Update
-from telegram.ext import Updater, CommandHandler, MessageHandler, Filters, CallbackContext
+from telegram.ext import ApplicationBuilder, CommandHandler, MessageHandler, filters, ContextTypes
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -33,30 +33,28 @@ def upload_progress(current, total):
     logger.info(f"Uploading: {percent:.2f}%")
 
 # Define a function to handle messages
-def handle_message(update: Update, context: CallbackContext):
+async def handle_message(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text
     try:
         video_file = download_video(url)
         with open(video_file, 'rb') as video:
-            update.message.reply_video(video, progress=upload_progress)
+            await update.message.reply_video(video, progress=upload_progress)
     except Exception as e:
-        update.message.reply_text(f"An error occurred: {e}")
+        await update.message.reply_text(f"An error occurred: {e}")
 
 # Define a function to start the bot
-def start(update: Update, context: CallbackContext):
-    update.message.reply_text("Send me a video link and I'll download it for you!")
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
+    await update.message.reply_text("Send me a video link and I'll download it for you!")
 
 # Main function to run the bot
 def main():
     # Replace 'YOUR_TOKEN' with your bot's API token
-    updater = Updater("YOUR_TOKEN", use_context=True)
+    application = ApplicationBuilder().token("YOUR_TOKEN").build()
 
-    dp = updater.dispatcher
-    dp.add_handler(CommandHandler("start", start))
-    dp.add_handler(MessageHandler(Filters.text & ~Filters.command, handle_message))
+    application.add_handler(CommandHandler("start", start))
+    application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
 
-    updater.start_polling()
-    updater.idle()
+    application.run_polling()
 
 if __name__ == '__main__':
     main()
