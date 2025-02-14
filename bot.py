@@ -49,7 +49,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
 # Main function to run the bot
 def main():
     # Replace 'YOUR_TOKEN' with your bot's API token
-    application = ApplicationBuilder().token("YOUR_TOKEN").build()
+    application = ApplicationBuilder().token("7400491029:AAF5r3cfKWpP8aXjI683z3izeca1YLhGVXc").build()
 
     application.add_handler(CommandHandler("start", start))
     application.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, handle_message))
